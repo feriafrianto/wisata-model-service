@@ -23,7 +23,7 @@ def multi_predict(request):
     siamese_model = siamese_architecture()
     cwd = os.getcwd()  
     siamese_model.load_weights(cwd+"/api/models/siamese_model.h5")
-
+    
     imgQuery = request.data['query']
     images = request.data['images']
 
