@@ -17,6 +17,27 @@ IMAGE_SHAPE = (224,224)
 def hello(request):
     return Response({'say':'hello'})
 
+
+@api_view(['POST'])
+def multi_predict(request):
+    siamese_model = siamese_architecture()
+    cwd = os.getcwd()  
+    siamese_model.load_weights(cwd+"/api/models/siamese_model.h5")
+
+    imgQuery = request.data['query']
+    images = request.data['images']
+
+    imgArr1 = get_duplicate_array_image(imgQuery, len(images))
+    imgArr2 = get_multi_array_image(images)
+
+    print(imgArr1.shape)
+    print(imgArr2.shape)
+
+    result = siamese_model.predict([imgArr1,imgArr2])
+    print(result)
+
+    return Response(result)
+
 @api_view(['POST'])
 def predict(request):
     siamese_model = siamese_architecture()
@@ -33,6 +54,23 @@ def predict(request):
 
     return Response({'predict':result[0][0]})
 
+def get_multi_array_image(multi_base64):
+    x = []
+    for base in multi_base64:
+        image = Image.open(BytesIO(base64.b64decode(base)))
+        image = image.resize(IMAGE_SHAPE)
+        imgArr = asarray(image)
+        x.append(imgArr)
+    return np.array(x).astype('float32')  
+
+def get_duplicate_array_image(str_base64, num):
+    x = []
+    for k in range(num):
+        image = Image.open(BytesIO(base64.b64decode(str_base64)))
+        image = image.resize(IMAGE_SHAPE)
+        imgArr = asarray(image)
+        x.append(imgArr)
+    return np.array(x).astype('float32')  
 
 def get_array_image(str_base64):
     x = []
