@@ -1,8 +1,8 @@
 from django.urls import path
-from .controllers import food
+from .controllers import tourism
 
 urlpatterns = [
-    path('hello', food.hello),
-    path('predict', food.predict),
-    path('multi-predict', food.multi_predict),
+    path('hello', tourism.hello),
+    path('predict', tourism.predict),
+    path('multi-predict', tourism.multi_predict),
 ]
